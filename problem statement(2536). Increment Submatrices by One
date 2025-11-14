@@ -1,0 +1,41 @@
+int** rangeAddQueries(int n, int** queries, int queriesSize, int* queriesColSize, int* returnSize, int** returnColumnSizes) {
+    
+    int** table        = malloc(sizeof(int*)*(n));
+    *returnColumnSizes = malloc(sizeof(int)*(n));
+    *returnSize=n;    
+    for(int i =0;i<(n);i++)
+    {
+        (*returnColumnSizes)[i]=n;
+        table[i]=calloc(n, sizeof(int));
+    }
+
+    for(int q = 0; q<queriesSize;q++)
+    {
+        int row_start = queries[q][0];
+        int row_end   = queries[q][2];
+
+        int col_start = queries[q][1];
+        int col_end   = queries[q][3];
+
+        for(int i = row_start;i<=row_end;i++)
+        {
+            table[i][col_start]++;
+            if(col_end+1<n)
+            {
+                table[i][col_end+1]--;
+            }
+        }
+    }
+    
+    for(int i=0;i<n;i++)
+    {
+        int cur = 0;
+        for(int j=0;j<n;j++)
+        {
+            cur+=table[i][j];
+            table[i][j]=cur;
+        }
+    }
+
+    return table;
+}
