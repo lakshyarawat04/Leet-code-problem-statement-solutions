@@ -1,0 +1,48 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+int cmpIntervals(const void *a, const void *b) {
+    int *ia = *(int **)a;
+    int *ib = *(int **)b;
+
+    // sort by end ascending, if tie by start descending
+    if (ia[1] == ib[1]) {
+        return ib[0] - ia[0]; // start descending
+    }
+    return ia[1] - ib[1]; // end ascending
+}
+
+int intersectionSizeTwo(int** intervals, int intervalsSize, int* intervalsColSize) {
+    // Sort intervals
+    qsort(intervals, intervalsSize, sizeof(int*), cmpIntervals);
+
+    int p1 = -1, p2 = -1;
+    int ans = 0;
+
+    for (int i = 0; i < intervalsSize; i++) {
+        int start = intervals[i][0];
+        int end   = intervals[i][1];
+
+        bool p1In = (p1 >= start && p1 <= end);
+        bool p2In = (p2 >= start && p2 <= end);
+
+        if (p1In && p2In) {
+            // Already have 2 points
+            continue;
+        } else if (p1In && !p2In) {
+            // Only p1 inside, add one point: end
+            ans += 1;
+            p2 = p1;
+            p1 = end;
+        } else {
+            // None inside, add two points: end-1, end
+            ans += 2;
+            p2 = end - 1;
+            p1 = end;
+        }
+    }
+
+    return ans;
+}
+
