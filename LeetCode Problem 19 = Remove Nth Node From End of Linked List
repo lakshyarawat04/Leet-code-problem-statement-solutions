@@ -1,0 +1,30 @@
+struct ListNode* removeNthFromEnd(struct ListNode* head, int n) {
+    // Step 1: Create dummy before head
+    struct ListNode* dummy = (struct ListNode*)malloc(sizeof(struct ListNode));
+    dummy->next = head;
+
+    // Step 2: two pointers
+    struct ListNode* fast = dummy;
+    struct ListNode* slow = dummy;
+
+    // Step 3: Move fast 'n' steps ahead
+    for (int i = 0; i < n; i++) {
+        fast = fast->next;
+    }
+
+    // Step 4: Move both until fast reaches last node
+    while (fast->next != NULL) {
+        fast = fast->next;
+        slow = slow->next;
+    }
+
+    // Step 5: Delete the target node
+    struct ListNode* temp = slow->next; // node to delete
+    slow->next = temp->next;            // bypass node
+    free(temp);                         // free memory
+
+    // Step 6: Return updated head
+    struct ListNode* newHead = dummy->next;
+    free(dummy);
+    return newHead;
+}
